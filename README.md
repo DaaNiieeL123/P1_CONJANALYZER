@@ -196,9 +196,8 @@
 
 ## 🚀 Instalación y Uso
 
-<div align="center">
-
 ### 📋 **Requisitos del Sistema**
+
 - **Java JRE 8 o superior** (solo para ejecutar el JAR)
 - **Java JDK 8 o superior** (solo si vas a compilar desde código fuente)
 
@@ -239,23 +238,6 @@ ant clean jar
 3. **🔍 Analizar**: Presiona el botón "Analizar" para procesar el código
 4. **👀 Ver Diagramas**: Navega por los diagramas generados automáticamente
 5. **📊 Reportes**: Genera reportes HTML de tokens, errores y simplificaciones JSON
-
-### 📦 **Para Distribuir tu Aplicación**
-
-Si quieres compartir CONJANALYZER con otros usuarios:
-
-```bash
-# Comparte toda la carpeta 'dist/' que contiene:
-# - CONJANALYZER.jar (archivo principal)
-# - lib/ (todas las dependencias)
-# - README.TXT (instrucciones básicas)
-
-# El usuario final solo necesita ejecutar:
-java -jar CONJANALYZER.jar
-```
-
-**💡 Tip**: El usuario solo necesita tener Java instalado, ¡no necesita NetBeans, Ant, ni JFlex/JavaCup!
-
 ---
 
 ## 📊 Sistema de Reportes
@@ -316,9 +298,8 @@ java -jar CONJANALYZER.jar
 
 ## 🧪 Testing y Casos de Prueba
 
-<div align="center">
-
 ### ✅ **Casos Exitosos (Notación Polaca)**
+
 ```ca
 {
     # Definición de conjuntos
@@ -335,6 +316,7 @@ java -jar CONJANALYZER.jar
 ```
 
 ### ❌ **Casos de Error**
+
 ```ca
 {
     # Error léxico: carácter inválido
@@ -354,39 +336,23 @@ java -jar CONJANALYZER.jar
 
 ## 🔧 Solución de Problemas Comunes
 
-<div align="center">
-
 ### 📦 **Problemas con el JAR**
+
 - **❌ "No se puede ejecutar el JAR"**: Verificar que Java 8+ esté instalado (`java -version`)
 - **🔍 "java no se reconoce como comando"**: Agregar Java al PATH del sistema
 - **📁 "Archivo no encontrado"**: Asegurarse de estar en la carpeta correcta donde está `dist/CONJANALYZER.jar`
 
 ### 🖼️ **Problemas con la Aplicación**
+
 - **🖼️ Los diagramas no se generan**: Verificar permisos de escritura y que las operaciones sean válidas
 - **🔧 Error al abrir reportes HTML**: Comprobar navegador predeterminado y permisos de escritura  
 - **⚡ Problemas de compilación**: Verificar Java JDK 8+ y que JFlex/Java Cup estén disponibles
-
-### 💡 **Comandos Útiles**
-```bash
-# Verificar versión de Java
-java -version
-
-# Ejecutar JAR con más memoria (si es necesario)
-java -Xmx512m -jar "dist/CONJANALYZER.jar"
-
-# Ver ayuda del JAR
-java -jar "dist/CONJANALYZER.jar" --help
-```
-
-</div>
 
 ---
 
 <div align="center">
 
-## 🔢 ¡Únete a la Revolución del Análisis de Conjuntos! 🔢
-
-**¿Listo para analizar y visualizar conjuntos como nunca antes?**
+## 🔢 ¡CONJANALYZER - Análisis de Conjuntos! 🔢
 
 [![⭐ Star este proyecto](https://img.shields.io/badge/⭐-Star_este_proyecto-yellow?style=for-the-badge)](https://github.com/DaaNiieeL123/CONJANALYZER)
 [![📢 Issues](https://img.shields.io/badge/📢-Report_Issues-red?style=for-the-badge)](https://github.com/DaaNiieeL123/CONJANALYZER/issues)
