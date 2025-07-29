@@ -1,0 +1,59 @@
+# ============================================
+# EJEMPLO 4: OPERACIONES EXTREMAS (5+ CONJUNTOS - SIN VISUALIZACIÓN)
+# ============================================
+
+{
+    # Definición de múltiples conjuntos para operaciones complejas
+    CONJ : A -> 1,2,3 ;
+    CONJ : B -> 2,3,4 ;
+    CONJ : C -> 3,4,5 ;
+    CONJ : D -> 4,5,6 ;
+    CONJ : E -> 5,6,7 ;
+    CONJ : F -> 6,7,8 ;
+
+    # ===== OPERACIONES CON 5 CONJUNTOS =====
+    # NOTA: Estas operaciones se procesan correctamente pero NO se visualizan en diagramas de Venn
+    
+    OPERA : cinco_union -> U U U U {A} {B} {C} {D} {E} ;            # A∪B∪C∪D∪E
+    OPERA : cinco_intersec -> & & & & {A} {B} {C} {D} {E} ;         # A∩B∩C∩D∩E
+    
+    # Operaciones mixtas con 5 conjuntos
+    OPERA : mixta_cinco -> U & & {A} {B} {C} U {D} {E} ;            # (A∩B∩C)∪(D∪E)
+    OPERA : compleja_cinco -> & U U {A} {B} {C} & {D} {E} ;         # (A∪B∪C)∩(D∩E)
+
+    # ===== OPERACIONES CON 6 CONJUNTOS =====
+    # Demostración de que el programa puede manejar incluso más conjuntos
+    
+    OPERA : seis_union -> U U U U U {A} {B} {C} {D} {E} {F} ;       # A∪B∪C∪D∪E∪F
+    OPERA : seis_compleja -> U & & {A} {B} {C} & & {D} {E} {F} ;    # (A∩B∩C)∪(D∩E∩F)
+    
+    # Operación extrema con complementos
+    OPERA : extrema -> & U U {A} {B} {C} ^ U U {D} {E} {F} ;        # (A∪B∪C)∩¬(D∪E∪F)
+
+    # ===== LEYES DEL ÁLGEBRA CON MÚLTIPLES CONJUNTOS =====
+    
+    # Asociatividad extendida (5 conjuntos)
+    OPERA : asoc_ext1 -> U U U U {A} {B} {C} {D} {E} ;              # ((((A∪B)∪C)∪D)∪E)
+    OPERA : asoc_ext2 -> U {A} U U U {B} {C} {D} {E} ;              # A∪(B∪C∪D∪E)
+    
+    # Distributividad compleja (5 conjuntos)
+    OPERA : dist_ext -> U & & {A} {B} {C} & {D} {E} ;               # (A∩B∩C)∪(D∩E)
+
+    # ===== EVALUACIONES =====
+    EVALUAR ( {3} , cinco_intersec );         # EXITOSO - 3 está en A∩B∩C∩D∩E? (Solo en A,B,C)
+    EVALUAR ( {1,7} , cinco_union );          # EXITOSO - 1,7 están en alguno de los 5
+    EVALUAR ( {4,5} , seis_compleja );        # Verificar operación con 6 conjuntos
+    EVALUAR ( {2} , extrema );                # Verificar operación con complemento
+
+    # Comentario importante
+    <!
+      ADVERTENCIA: Este ejemplo usa 5+ conjuntos por operación.
+      
+      ✅ FUNCIONAMIENTO: Todas las operaciones se procesan correctamente
+      ❌ VISUALIZACIÓN: NO se generan diagramas de Venn (limitado a 4 conjuntos)
+      📊 REPORTES: Sí se generan reportes HTML y JSON con los resultados
+      
+      Esto demuestra que CONJANALYZER puede manejar operaciones de gran complejidad
+      aunque la visualización esté limitada por claridad gráfica.
+    !>
+}

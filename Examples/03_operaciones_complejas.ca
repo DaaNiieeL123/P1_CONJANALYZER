@@ -1,0 +1,55 @@
+# ============================================
+# EJEMPLO 3: OPERACIONES AVANZADAS (MÁXIMO 4 CONJUNTOS)
+# ============================================
+
+{
+    # Definición de cuatro conjuntos para operaciones complejas
+    CONJ : A -> 1,2,3,4 ;
+    CONJ : B -> 3,4,5,6 ;
+    CONJ : C -> 5,6,7,8 ;
+    CONJ : D -> 7,8,9,10 ;
+
+    # ===== OPERACIONES CON 1 CONJUNTO =====
+    OPERA : comp_A -> ^ {A} ;                           # Complemento de A
+
+    # ===== OPERACIONES CON 2 CONJUNTOS =====
+    OPERA : union_AB -> U {A} {B} ;                     # A∪B
+    OPERA : intersec_CD -> & {C} {D} ;                  # C∩D
+
+    # ===== OPERACIONES CON 3 CONJUNTOS =====
+    OPERA : triple_union -> U U {A} {B} {C} ;           # (A∪B)∪C
+    OPERA : mixta_3 -> U {A} & {B} {C} ;                # A∪(B∩C)
+
+    # ===== OPERACIONES CON 4 CONJUNTOS (MÁXIMO PARA VISUALIZACIÓN) =====
+    OPERA : cuadruple_union -> U U U {A} {B} {C} {D} ;              # ((A∪B)∪C)∪D
+    OPERA : cuadruple_intersec -> & & & {A} {B} {C} {D} ;           # ((A∩B)∩C)∩D
+    OPERA : compleja_mixta -> U U {A} {B} & {C} {D} ;               # (A∪B)∪(C∩D)
+    OPERA : super_compleja -> & U {A} {B} U {C} {D} ;               # (A∪B)∩(C∪D)
+
+    # Operaciones distributivas con 4 conjuntos
+    OPERA : dist_compleja1 -> U & {A} {B} & {C} {D} ;               # (A∩B)∪(C∩D)
+    OPERA : dist_compleja2 -> & U {A} {B} U {C} {D} ;               # (A∪B)∩(C∪D)
+
+    # Operaciones con complementos y 4 conjuntos
+    OPERA : comp_cuadruple -> ^ U U U {A} {B} {C} {D} ;             # ¬(A∪B∪C∪D)
+    OPERA : morgan_compleja -> ^ & & & {A} {B} {C} {D} ;            # ¬(A∩B∩C∩D)
+
+    # Operaciones complejas anidadas (4 conjuntos)
+    OPERA : super_anidada -> U & U {A} {B} & {C} {D} ^ {A} ;        # ((A∪B)∩(C∩D))∪¬A
+    OPERA : ultra_compleja -> & U & {A} {B} U {C} {D} ^ U {A} {D} ; # ((A∩B)∪(C∪D))∩¬(A∪D)
+
+    # ===== EVALUACIONES =====
+    EVALUAR ( {3,4} , cuadruple_intersec );    # FALLO - no hay intersección de los 4
+    EVALUAR ( {1,10} , cuadruple_union );      # EXITOSO - están en la unión total
+    EVALUAR ( {5,6} , compleja_mixta );        # EXITOSO - están en (A∪B)∪(C∩D)
+    EVALUAR ( {4,5} , super_compleja );        # EXITOSO - verificar (A∪B)∩(C∪D)
+    EVALUAR ( {7,8} , dist_compleja1 );        # EXITOSO - están en (A∩B)∪(C∩D)
+
+    # Comentario de línea
+    <!
+      Este ejemplo demuestra operaciones avanzadas
+      usando máximo 4 conjuntos por operación,
+      que es el límite para visualización de diagramas de Venn.
+      Muestra operaciones complejas anidadas y distributivas.
+    !>
+}

@@ -1,0 +1,169 @@
+// ══════════════════════════════════════════      IMPORTACIONES     ══════════════════════════════════════════
+package Analyzer;
+
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
+
+import Abstract.Expression;
+import Abstract.Instruction;
+import Expression.*;
+import Instruction.*;
+import Types.*;
+import Utils.ErrorHandler;
+
+parser code{:   
+                public ArrayList<Instruction> sentencias = new ArrayList<>();
+                public Stack<String> context = new Stack<>();
+                
+                //  Variables estáticas para capturar operaciones
+                public static Stack<String> operacionesStack = new Stack<>();
+                public static List<String> operandosCapturados = new ArrayList<>();
+                
+                public void syntax_error(Symbol cur_token) {
+                        String errorMsg = "Error sintáctico inesperado";
+                        if(cur_token.value != null) {
+                        errorMsg = "Error en la estructura cerca de: '" + cur_token.value.toString() + "'";
+                        }
+                        ErrorHandler.AddSyntacticalError("Sintáctico", errorMsg,cur_token.left,cur_token.right);
+                }
+
+                public void unrecovered_syntax_error(Symbol cur_token) {
+                        String errorMsg = "Error sintáctico irrecuperable";
+                        if(cur_token.value != null) {
+                        errorMsg = "Error sintáctico irrecuperable cerca de: '" + cur_token.value.toString() + "'";
+                        }
+                        ErrorHandler.AddSyntacticalError("Sintáctico", errorMsg, cur_token.left, cur_token.right);
+                        if (sentencias == null) {
+                                sentencias = new ArrayList<>();
+                        }
+                }
+                
+                //Método para capturar operandos
+                public static void capturarOperando(String operando) {
+                        operandosCapturados.add(operando);
+                }
+                
+                //  Método para limpiar operandos
+                public static void limpiarOperandos() {
+                        operandosCapturados.clear();
+                        operacionesStack.clear();
+                }
+        :}
+
+// ══════════════════════════════════════════ TERMINALES GENERALES ══════════════════════════════════════════
+terminal String CONJ, OPERA, EVALUAR;
+terminal String UNION, INTERSECCION, DIFERENCIA, COMPLEMENTO;
+terminal String RANGO, FLECHA, PUNTO_COMA;
+terminal String ID, ENTERO, ASCII;
+terminal String LLAVE_IZQ, LLAVE_DCHA, DOS_PUNTOS, COMA, PAR_IZQ, PAR_DCHA;
+
+// ══════════════════════════════════════════     NO TERMINALES      ══════════════════════════════════════════
+non terminal INICIO;   
+non terminal ArrayList<Instruction> INSTRUCCIONES;  
+non terminal Instruction INSTRUCCION;  
+non terminal DefineSet DEFINIR_CONJ;
+non terminal OperateSet OPERAR_CONJ;
+non terminal EvaluateSet EVALUACION_CONJ;
+non terminal Expression LISTA;
+non terminal Expression EXPRESION;
+non terminal Expression CONJUNTO;
+non terminal Expression OPERADORES;
+non terminal List<Expression> ELEMENTOS;
+non terminal Expression CHAR_RANGE;  // Nueva regla para caracteres en rangos  
+
+// ══════════════════════════════════════════    PRECEDENCIA    ══════════════════════════════════════════
+precedence left UNION, INTERSECCION, DIFERENCIA;
+precedence right COMPLEMENTO; 
+precedence left RANGO;
+
+// ══════════════════════════════════════════ INICIAR GRAMÁTICA ══════════════════════════════════════════
+start with INICIO;
+
+INICIO ::= 
+        LLAVE_IZQ INSTRUCCIONES:inst LLAVE_DCHA {: sentencias = inst; :} ;
+
+INSTRUCCIONES ::= 
+        INSTRUCCIONES:l INSTRUCCION:i {: RESULT = l; RESULT.add(i); :} |
+        INSTRUCCION:i                  {: RESULT = new ArrayList<>(Arrays.asList(i)); :} ;
+
+INSTRUCCION ::= 
+        DEFINIR_CONJ:e          {: RESULT = e; :} |
+        OPERAR_CONJ:e           {: RESULT = e; :} |
+        EVALUACION_CONJ:e       {: RESULT = e; :} ;
+
+// ══════════════════════════════════════════ INTRUCCIONES CONJUNTOS ══════════════════════════════════════════
+
+DEFINIR_CONJ ::= 
+        CONJ DOS_PUNTOS ID:n FLECHA LISTA:c PUNTO_COMA {: RESULT = new DefineSet(n, c); :} ;
+
+OPERAR_CONJ ::= 
+        OPERA DOS_PUNTOS ID:n FLECHA OPERADORES:e PUNTO_COMA {: 
+                limpiarOperandos();
+                RESULT = new OperateSet(n, e); :} ;
+
+EVALUACION_CONJ ::=
+        EVALUAR PAR_IZQ LLAVE_IZQ LISTA:c LLAVE_DCHA COMA ID:v PAR_DCHA PUNTO_COMA {: RESULT = new EvaluateSet(c, v); :} ;
+
+// ══════════════════════════════════════════ ELEMENTOS DEL CONJUNTOS ══════════════════════════════════════════
+LISTA ::= 
+        ELEMENTOS:e  {: RESULT = new ListElements(e); :} ;
+
+ELEMENTOS ::= 
+        ELEMENTOS:ele COMA EXPRESION:expr   {: if (ele == null) { ele = new ArrayList<>(); } 
+                                                                ele.add(expr); RESULT = ele; :} |
+        EXPRESION:expr                    {: RESULT = new ArrayList<>(Arrays.asList(expr)); :} ;
+
+//══════════════════════════════════════════ EXPRESIONES Y OPERADORES ══════════════════════════════════════════
+EXPRESION ::=  
+        ENTERO:en                                   {: RESULT = new Primitive(en, Type.ENTERO); :} |
+        ASCII:asc                                   {: RESULT = new Primitive(asc, Type.SIMBOLO); :} |  
+        ID:le                                       {: RESULT = new Primitive(le , Type.LETRA); :} |
+        CHAR_RANGE:ch                               {: RESULT = ch; :} |
+        EXPRESION:e1 RANGO EXPRESION:e2             {: RESULT = new RangeSet(e1,e2); :} ;
+
+
+CHAR_RANGE ::=
+        LLAVE_DCHA:rb                               {: RESULT = new Primitive(rb, Type.SIMBOLO); :} |
+        LLAVE_IZQ:lb                                {: RESULT = new Primitive(lb, Type.SIMBOLO); :} |
+        PAR_IZQ:pl                                  {: RESULT = new Primitive(pl, Type.SIMBOLO); :} |
+        PAR_DCHA:pr                                 {: RESULT = new Primitive(pr, Type.SIMBOLO); :} |
+        DOS_PUNTOS:dp                               {: RESULT = new Primitive(dp, Type.SIMBOLO); :} |
+        PUNTO_COMA:pc                               {: RESULT = new Primitive(pc, Type.SIMBOLO); :} |
+        COMA:cm                                     {: RESULT = new Primitive(cm, Type.SIMBOLO); :} |
+        UNION:un                                    {: RESULT = new Primitive(un, Type.SIMBOLO); :} |
+        INTERSECCION:in                             {: RESULT = new Primitive(in, Type.SIMBOLO); :} |
+        DIFERENCIA:df                               {: RESULT = new Primitive(df, Type.SIMBOLO); :} |
+        COMPLEMENTO:cp                              {: RESULT = new Primitive(cp, Type.SIMBOLO); :} |
+        RANGO:rg                                    {: RESULT = new Primitive(rg, Type.SIMBOLO); :} ;
+
+OPERADORES ::= 
+        CONJUNTO:co {: 
+                if (co instanceof ReferenceSet) {
+                capturarOperando(((ReferenceSet) co).getSetName());
+                }
+                RESULT = co; 
+        :} |
+        UNION OPERADORES:e1 OPERADORES:e2 {: 
+                operacionesStack.push("U");
+                RESULT = new Operators(e1,"U",e2); 
+        :} |
+        INTERSECCION OPERADORES:e1 OPERADORES:e2 {: 
+                operacionesStack.push("&");
+                RESULT = new Operators(e1,"&",e2); 
+        :} |
+        DIFERENCIA OPERADORES:e1 OPERADORES:e2 {: 
+                operacionesStack.push("-");
+                RESULT = new Operators(e1,"-",e2); 
+        :} |
+        COMPLEMENTO OPERADORES:e {: 
+                operacionesStack.push("^");
+                RESULT = new Operators(e,"^",null); 
+        :} ;
+
+CONJUNTO ::= 
+        LLAVE_IZQ ID:id LLAVE_DCHA {: capturarOperando(id);
+                RESULT = new ReferenceSet(id); :} ;
+//══════════════════════════════════════════   FIN GRAMÁTICA   ══════════════════════════════════════════

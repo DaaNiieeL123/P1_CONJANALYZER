@@ -1,0 +1,51 @@
+# ============================================
+# EJEMPLO 1: OPERACIONES BÁSICAS (MÁXIMO 2 CONJUNTOS)
+# ============================================
+
+{
+    # Definición de conjuntos básicos
+    CONJ : A -> 1,2,3,4,5 ;
+    CONJ : B -> 4,5,6,7,8 ;
+
+    # ===== OPERACIONES CON 1 CONJUNTO =====
+    OPERA : complemento_A -> ^ {A} ;         # Complemento de A
+    OPERA : complemento_B -> ^ {B} ;         # Complemento de B
+    
+    # Ley de Idempotencia (1 conjunto usado)
+    OPERA : idem_union -> U {A} {A} ;        # Se simplifica a: {A}
+    OPERA : idem_intersec -> & {B} {B} ;     # Se simplifica a: {B}
+    
+    # Ley del Doble Complemento (1 conjunto usado)
+    OPERA : doble_comp_A -> ^ ^ {A} ;        # Se simplifica a: {A}
+    OPERA : doble_comp_B -> ^ ^ {B} ;        # Se simplifica a: {B}
+
+    # ===== OPERACIONES CON 2 CONJUNTOS =====
+    OPERA : union -> U {A} {B} ;             # Unión: {1,2,3,4,5,6,7,8}
+    OPERA : interseccion -> & {A} {B} ;      # Intersección: {4,5}
+    OPERA : diferencia -> - {A} {B} ;        # Diferencia: {1,2,3}
+    OPERA : diferencia_inv -> - {B} {A} ;    # Diferencia: {6,7,8}
+
+    # Leyes Conmutativas (2 conjuntos)
+    OPERA : conm_union -> U {B} {A} ;        # Equivale a: U {A} {B}
+    OPERA : conm_intersec -> & {B} {A} ;     # Equivale a: & {A} {B}
+
+    # Leyes de Absorción (2 conjuntos)
+    OPERA : absorp1 -> U {A} & {A} {B} ;     # Se simplifica a: {A}
+    OPERA : absorp2 -> & {A} U {A} {B} ;     # Se simplifica a: {A}
+
+    # Leyes de De Morgan (2 conjuntos)
+    OPERA : morgan1 -> ^ U {A} {B} ;         # Equivale a: & ^ {A} ^ {B}
+    OPERA : morgan2 -> ^ & {A} {B} ;         # Equivale a: U ^ {A} ^ {B}
+
+    # ===== EVALUACIONES =====
+    EVALUAR ( {4,5} , interseccion );       # EXITOSO - 4,5 están en A∩B
+    EVALUAR ( {1,2,3} , diferencia );       # EXITOSO - 1,2,3 están en A-B
+    EVALUAR ( {9} , union );                # FALLO - 9 no está en A∪B
+    EVALUAR ( {1,2,3,4,5} , doble_comp_A ); # EXITOSO - doble complemento = A original
+
+    # Comentario de línea
+    <!
+      Este ejemplo demuestra operaciones fundamentales
+      usando máximo 2 conjuntos por operación
+    !>
+}

@@ -1,0 +1,53 @@
+# ============================================
+# EJEMPLO 2: OPERACIONES INTERMEDIAS (MÁXIMO 3 CONJUNTOS)
+# ============================================
+
+{
+    # Definición de conjuntos de diferentes tipos
+    CONJ : A -> 1,2,3,4,5 ;
+    CONJ : B -> 3,4,5,6,7 ;
+    CONJ : C -> 5,6,7,8,9 ;
+
+    # ===== OPERACIONES CON 1 CONJUNTO =====
+    OPERA : comp_A -> ^ {A} ;            # Complemento de A
+    OPERA : comp_B -> ^ {B} ;            # Complemento de B
+    OPERA : comp_C -> ^ {C} ;            # Complemento de C
+
+    # ===== OPERACIONES CON 2 CONJUNTOS =====
+    OPERA : union_AB -> U {A} {B} ;      # Unión A∪B: {1,2,3,4,5,6,7}
+    OPERA : intersec_BC -> & {B} {C} ;   # Intersección B∩C: {5,6,7}
+    OPERA : dif_AC -> - {A} {C} ;        # Diferencia A-C: {1,2,3,4}
+
+    # ===== OPERACIONES CON 3 CONJUNTOS =====
+    OPERA : triple_union -> U U {A} {B} {C} ;           # (A∪B)∪C
+    OPERA : triple_intersec -> & & {A} {B} {C} ;        # (A∩B)∩C
+    OPERA : union_intersec -> U {A} & {B} {C} ;         # A∪(B∩C)
+    OPERA : intersec_union -> & {A} U {B} {C} ;         # A∩(B∪C)
+
+    # Leyes Asociativas (3 conjuntos)
+    OPERA : asoc_union1 -> U U {A} {B} {C} ;            # (A∪B)∪C
+    OPERA : asoc_union2 -> U {A} U {B} {C} ;            # A∪(B∪C)
+    OPERA : asoc_intersec1 -> & & {A} {B} {C} ;         # (A∩B)∩C
+    OPERA : asoc_intersec2 -> & {A} & {B} {C} ;         # A∩(B∩C)
+
+    # Leyes Distributivas (3 conjuntos)
+    OPERA : dist_union -> U {A} & {B} {C} ;             # A∪(B∩C)
+    OPERA : dist_intersec -> & {A} U {B} {C} ;          # A∩(B∪C)
+
+    # Operaciones con complementos (3 conjuntos)
+    OPERA : morgan_triple -> ^ U U {A} {B} {C} ;        # ¬(A∪B∪C)
+    OPERA : comp_intersec -> ^ & & {A} {B} {C} ;        # ¬(A∩B∩C)
+
+    # ===== EVALUACIONES =====
+    EVALUAR ( {5} , triple_intersec );    # EXITOSO - 5 está en A∩B∩C
+    EVALUAR ( {1,9} , triple_union );     # EXITOSO - 1,9 están en A∪B∪C
+    EVALUAR ( {2} , intersec_union );     # FALLO - 2 no está en A∩(B∪C)
+    EVALUAR ( {6,7} , union_intersec );   # EXITOSO - 6,7 están en A∪(B∩C)
+
+    # Comentario de línea
+    <!
+      Este ejemplo demuestra operaciones intermedias
+      usando máximo 3 conjuntos por operación,
+      incluyendo leyes asociativas y distributivas
+    !>
+}

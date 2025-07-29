@@ -1,0 +1,31 @@
+# ============================================
+# EJEMPLO 4: COMENTARIOS Y SINTAXIS AVANZADA
+# ============================================
+
+{
+    # Este es un comentario de línea simple
+    CONJ : numeros -> 1,2,3,4,5 ;
+
+    <!
+      Este es un comentario
+      de múltiples líneas.
+      Útil para documentar operaciones complejas.
+    !>
+
+    CONJ : letras -> a,b,c,d,e ;
+
+    # Operaciones documentadas en NOTACIÓN POLACA
+    OPERA : union_documentada -> U {numeros} {letras} ;  # Combina números y letras
+
+    <!
+      La siguiente operación demuestra
+      el uso del complemento doble
+    !>
+    OPERA : ejemplo_complemento -> ^ ^ {numeros} ;
+
+    # Evaluación final
+    EVALUAR ( {3} , union_documentada );    # EXITOSO
+    EVALUAR ( {z} , union_documentada );    # FALLO
+
+    # Fin del ejemplo
+}
